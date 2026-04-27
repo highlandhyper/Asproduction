@@ -2,11 +2,15 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import { Resend } from "resend";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-import { Resend } from "resend";
+const app = express();
+const PORT = 3000;
+
+app.use(express.json());
 
 let resendClient: Resend | null = null;
 
@@ -21,58 +25,52 @@ function getResend() {
   return resendClient;
 }
 
-async function startServer() {
-  const app = express();
-  const PORT = 3000;
+// Explicitly handle health check
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
+});
 
-  app.use(express.json());
+// API Routes
+app.post("/api/contact", async (req, res) => {
+  const { name, email, subject, message } = req.body;
+  
+  console.log("Contact form submission received:", { name, email, subject, message });
 
-  app.get("/api/health", (req, res) => res.json({ status: "ok" }));
+  try {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (apiKey) {
+      const resend = getResend();
+      const { data, error } = await resend.emails.send({
+        from: "AS PRODUCTION <onboarding@resend.dev>",
+        to: process.env.CONTACT_RECEIVER_EMAIL || "highlandhiper@gmail.com",
+        subject: `Contact Form: ${subject}`,
+        html: `
+          <h1>New Contact Submission</h1>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Subject:</strong> ${subject}</p>
+          <p><strong>Message:</strong></p>
+          <p>${message}</p>
+        `,
+      });
 
-  // API Routes
-  app.post("/api/contact", async (req, res) => {
-    console.log("Contact API hit with body:", JSON.stringify(req.body));
-    const { name, email, subject, message } = req.body;
-    
-    console.log("Contact form submission received:", { name, email, subject, message });
-
-    try {
-      const apiKey = process.env.RESEND_API_KEY;
-      if (apiKey) {
-        console.log("Attempting to send email via Resend...");
-        const resend = getResend();
-        const { data, error } = await resend.emails.send({
-          from: "AS PRODUCTION <onboarding@resend.dev>",
-          to: process.env.CONTACT_RECEIVER_EMAIL || "highlandhiper@gmail.com",
-          subject: `Contact Form: ${subject}`,
-          html: `
-            <h1>New Contact Submission</h1>
-            <p><strong>Name:</strong> ${name}</p>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Subject:</strong> ${subject}</p>
-            <p><strong>Message:</strong></p>
-            <p>${message}</p>
-          `,
-        });
-
-        if (error) {
-          console.error("Resend specific error:", error);
-          return res.status(500).json({ error: error.message });
-        }
-
-        console.log("Email sent successfully:", data);
-        res.json({ success: true, message: "Email sent successfully" });
-      } else {
-        console.warn("RESEND_API_KEY is missing in environment variables.");
-        res.json({ success: true, message: "Submission logged (RESEND_API_KEY not set)" });
+      if (error) {
+        console.error("Resend error:", error);
+        return res.status(500).json({ error: error.message });
       }
-    } catch (error) {
-      console.error("Critical failure in contact API:", error);
-      res.status(500).json({ error: "Failed to process request" });
-    }
-  });
 
-  // Vite middleware setup
+      res.json({ success: true, data });
+    } else {
+      res.json({ success: true, message: "Logged (Key not set)" });
+    }
+  } catch (error) {
+    console.error("Contact API failure:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Setup middleware based on environment
+async function startServer() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -87,11 +85,14 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-
-  return app;
+  // Always listen in Cloud Run environment
+  if (process.env.VERCEL !== '1') {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  }
 }
 
-export const app = startServer();
+startServer();
+
+export default app;
