@@ -248,18 +248,24 @@ export function Overlay() {
         body: JSON.stringify(formState),
       });
 
+      const contentType = response.headers.get('content-type');
+      let data;
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      }
+
       if (response.ok) {
         setSubmitStatus('success');
         setFormState({ name: '', email: '', subject: '', message: '' });
       } else {
-        const errorData = await response.json();
-        const errorMessage = errorData.error || 'Server error';
+        const errorMessage = (data && data.error) || `Server error (${response.status})`;
         console.error('Submission failed:', errorMessage);
         setErrorMessage(errorMessage);
         setSubmitStatus('error');
       }
     } catch (error) {
       console.error('Submission error:', error);
+      setErrorMessage(error instanceof Error ? error.message : 'Connection failed');
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
