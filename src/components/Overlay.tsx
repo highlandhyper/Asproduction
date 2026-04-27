@@ -221,6 +221,7 @@ export function Overlay() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<null | 'success' | 'error'>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isCopied, setIsCopied] = useState(false);
 
   const handleCopyEmail = () => {
@@ -251,6 +252,10 @@ export function Overlay() {
         setSubmitStatus('success');
         setFormState({ name: '', email: '', subject: '', message: '' });
       } else {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || 'Server error';
+        console.error('Submission failed:', errorMessage);
+        setErrorMessage(errorMessage);
         setSubmitStatus('error');
       }
     } catch (error) {
@@ -1002,7 +1007,11 @@ export function Overlay() {
                     </div>
                     
                     {submitStatus === 'error' && (
-                      <p className="text-red-400 text-xs font-mono tracking-wider">! Error: Something went wrong. Please try again.</p>
+                      <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
+                        <p className="text-red-400 text-xs font-mono tracking-wider">
+                          ! Error: {errorMessage || "Something went wrong. Please try again."}
+                        </p>
+                      </div>
                     )}
 
                     <button 

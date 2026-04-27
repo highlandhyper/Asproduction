@@ -34,9 +34,11 @@ async function startServer() {
     console.log("Contact form submission received:", { name, email, subject, message });
 
     try {
-      if (process.env.RESEND_API_KEY) {
+      const apiKey = process.env.RESEND_API_KEY;
+      if (apiKey) {
+        console.log("Attempting to send email via Resend...");
         const resend = getResend();
-        await resend.emails.send({
+        const { data, error } = await resend.emails.send({
           from: "AS PRODUCTION <onboarding@resend.dev>",
           to: process.env.CONTACT_RECEIVER_EMAIL || "highlandhiper@gmail.com",
           subject: `Contact Form: ${subject}`,
@@ -49,13 +51,21 @@ async function startServer() {
             <p>${message}</p>
           `,
         });
+
+        if (error) {
+          console.error("Resend specific error:", error);
+          return res.status(500).json({ error: error.message });
+        }
+
+        console.log("Email sent successfully:", data);
         res.json({ success: true, message: "Email sent successfully" });
       } else {
+        console.warn("RESEND_API_KEY is missing in environment variables.");
         res.json({ success: true, message: "Submission logged (RESEND_API_KEY not set)" });
       }
     } catch (error) {
-      console.error("Failed to send email:", error);
-      res.status(500).json({ error: "Failed to send email" });
+      console.error("Critical failure in contact API:", error);
+      res.status(500).json({ error: "Failed to process request" });
     }
   });
 
