@@ -63,7 +63,7 @@ export function HeroGeometric({
             whileInView="visible"
             viewport={{ once: true }}
           >
-            <p className="text-sm md:text-base text-white/30 mb-12 tracking-widest uppercase font-mono max-w-lg mx-auto leading-relaxed">
+            <p className="text-sm md:text-base text-white/50 mb-12 tracking-widest uppercase font-mono max-w-lg mx-auto leading-relaxed">
               Based in the intersection of design & technology. We build products that move people.
             </p>
           </motion.div>

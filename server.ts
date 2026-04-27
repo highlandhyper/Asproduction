@@ -6,6 +6,21 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+import { Resend } from "resend";
+
+let resendClient: Resend | null = null;
+
+function getResend() {
+  if (!resendClient) {
+    const key = process.env.RESEND_API_KEY;
+    if (!key) {
+      throw new Error("RESEND_API_KEY is not set");
+    }
+    resendClient = new Resend(key);
+  }
+  return resendClient;
+}
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -16,11 +31,32 @@ async function startServer() {
   app.post("/api/contact", async (req, res) => {
     const { name, email, subject, message } = req.body;
     
-    // Placeholder for future email/webhook integration
     console.log("Contact form submission received:", { name, email, subject, message });
-    
-    // For now, we'll just simulate a successful save or log
-    res.json({ success: true, message: "Submission logged (Waiting for new provider setup)" });
+
+    try {
+      if (process.env.RESEND_API_KEY) {
+        const resend = getResend();
+        await resend.emails.send({
+          from: "AS PRODUCTION <onboarding@resend.dev>",
+          to: process.env.CONTACT_RECEIVER_EMAIL || "highlandhiper@gmail.com",
+          subject: `Contact Form: ${subject}`,
+          html: `
+            <h1>New Contact Submission</h1>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Subject:</strong> ${subject}</p>
+            <p><strong>Message:</strong></p>
+            <p>${message}</p>
+          `,
+        });
+        res.json({ success: true, message: "Email sent successfully" });
+      } else {
+        res.json({ success: true, message: "Submission logged (RESEND_API_KEY not set)" });
+      }
+    } catch (error) {
+      console.error("Failed to send email:", error);
+      res.status(500).json({ error: "Failed to send email" });
+    }
   });
 
   // Vite middleware setup

@@ -63,10 +63,10 @@ export function Founder() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <span className="text-[10px] uppercase tracking-[0.4em] text-white/60 mb-6 block">The Person Behind</span>
+              <span className="text-[10px] uppercase tracking-[0.4em] text-white/50 mb-6 block">The Person Behind</span>
               <h1 className="text-6xl sm:text-7xl md:text-9xl font-display uppercase tracking-tighter leading-[0.9] mb-8">
                 Ashiq <br />
-                <span className="text-white/30 italic font-serif normal-case tracking-normal">Founder</span>
+                <span className="text-white/40 italic font-serif normal-case tracking-normal">Founder</span>
               </h1>
             </motion.div>
 
@@ -92,11 +92,11 @@ export function Founder() {
               className="pt-12 border-t border-white/5 grid grid-cols-2 gap-8"
             >
               <div>
-                <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-4 block">Based In</span>
+                <span className="text-[10px] uppercase tracking-[0.2em] text-white/50 mb-4 block">Based In</span>
                 <div className="text-lg font-display uppercase text-white/80">Malappuram / Kerala</div>
               </div>
               <div>
-                <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-4 block">Specialization</span>
+                <span className="text-[10px] uppercase tracking-[0.2em] text-white/50 mb-4 block">Specialization</span>
                 <div className="text-lg font-display uppercase text-white/80">Creative Direction</div>
               </div>
             </motion.div>

@@ -31,11 +31,11 @@ export function InsightsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
-          <span className="text-[10px] uppercase tracking-[0.4em] text-white/40">Knowledge Base & Case Studies</span>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-white/50">Knowledge Base & Case Studies</span>
           <h1 className="text-6xl md:text-9xl font-display uppercase tracking-tighter leading-[0.85]">
             Our <span className="text-white/40 italic font-serif normal-case tracking-normal">Insights</span>
           </h1>
-          <p className="text-white/40 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed">
+          <p className="text-white/60 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed">
             Exploring the intersection of cinematic production, performance-driven web apps, and human-centric design.
           </p>
         </motion.div>
@@ -113,21 +113,21 @@ export function InsightsPage() {
 
                   <div className="space-y-10">
                     <div className="space-y-4">
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/20">The Challenge</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/50">The Challenge</span>
                       <p className="text-lg text-white/80 font-light leading-relaxed">
                         {selectedArticle.caseStudy.challenge}
                       </p>
                     </div>
 
                     <div className="space-y-4">
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/20">The Solution</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/50">The Solution</span>
                       <p className="text-lg text-white/80 font-light leading-relaxed">
                         {selectedArticle.caseStudy.solution}
                       </p>
                     </div>
 
                     <div className="space-y-4">
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/20">The Results</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/50">The Results</span>
                       <div className="p-8 rounded-2xl bg-white/[0.03] border border-white/5">
                         <p className="text-xl text-indigo-300 font-medium italic leading-relaxed">
                           "{selectedArticle.caseStudy.results}"
@@ -137,7 +137,7 @@ export function InsightsPage() {
 
                     {/* Related Articles */}
                     <div className="pt-12 border-t border-white/5 space-y-8">
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/20">Related Insights</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/50">Related Insights</span>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         {articles
                           .filter(a => a.category === selectedArticle.category && a.id !== selectedArticle.id)
@@ -176,7 +176,7 @@ export function InsightsPage() {
                           ))
                         }
                         {articles.filter(a => a.category === selectedArticle.category && a.id !== selectedArticle.id).length === 0 && (
-                          <p className="text-white/20 text-xs italic">No related articles in this category yet.</p>
+                          <p className="text-white/40 text-xs italic">No related articles in this category yet.</p>
                         )}
                       </div>
                     </div>
@@ -194,7 +194,7 @@ export function InsightsPage() {
              <img src={new URL('/white_logo.png', import.meta.url).href} alt="Logo" className="w-10 h-10 object-contain" />
              <span className="font-display uppercase tracking-widest text-sm">AS PRODUCTION</span>
           </div>
-          <p className="text-white/20 text-[10px] uppercase tracking-[0.2em]">© 2024 AS PRODUCTION. All rights reserved.</p>
+          <p className="text-white/40 text-[10px] uppercase tracking-[0.2em]">© 2024 AS PRODUCTION. All rights reserved.</p>
         </div>
       </footer>
     </div>

@@ -39,6 +39,7 @@ const works = [
     title: 'Elysian Vision', 
     category: 'Architecture Photography', 
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop',
+    video: 'https://assets.mixkit.co/videos/preview/mixkit-modern-apartment-building-architecture-441-large.mp4',
     desc: 'A comprehensive study of minimalist structural design and natural light interplay in modern urban spaces.',
     client: 'Elysian Group',
     year: '2024'
@@ -47,6 +48,7 @@ const works = [
     title: 'Sovereign Pay', 
     category: 'Fintech Web App', 
     image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=2070&auto=format&fit=crop',
+    video: 'https://assets.mixkit.co/videos/preview/mixkit-software-developer-working-on-his-laptop-34538-large.mp4',
     desc: 'A secure, high-performance financial dashboard designed for institutional investors with real-time data visualization.',
     client: 'Sovereign Capital',
     year: '2023'
@@ -55,6 +57,7 @@ const works = [
     title: 'Vanguard Spirit', 
     category: 'Cinematic Video', 
     image: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1925&auto=format&fit=crop',
+    video: 'https://assets.mixkit.co/videos/preview/mixkit-cinematographer-filming-with-a-professional-camera-31742-large.mp4',
     desc: 'High-octane motion graphics and cinematic storytelling for a global sports footwear launch campaign.',
     client: 'Vanguard Athletics',
     year: '2024'
@@ -63,6 +66,7 @@ const works = [
     title: 'Obsidian Studio', 
     category: 'Brand Identity', 
     image: 'https://images.unsplash.com/photo-1635405074683-96d6921a2a68?q=80&w=2069&auto=format&fit=crop',
+    video: 'https://assets.mixkit.co/videos/preview/mixkit-designer-drawing-on-a-graphics-tablet-31741-large.mp4',
     desc: 'Complete visual ecosystem and luxury brand guidelines for a boutique creative agency specializing in 3D production.',
     client: 'Obsidian Co.',
     year: '2023'
@@ -95,6 +99,23 @@ const clients = [
 
 function BentoItem({ work, colSpan, delay, onClick }: { work: any, colSpan: string, delay: number, onClick: () => void }) {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  };
 
   return (
     <motion.div 
@@ -103,6 +124,8 @@ function BentoItem({ work, colSpan, delay, onClick }: { work: any, colSpan: stri
       viewport={{ once: true }}
       transition={{ delay }}
       onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
@@ -155,11 +178,24 @@ function BentoItem({ work, colSpan, delay, onClick }: { work: any, colSpan: stri
         onLoad={() => setIsLoaded(true)}
         className={cn(
           "absolute inset-0 w-full h-full object-cover transition-all duration-700",
-          isLoaded ? "opacity-50 group-hover:scale-105" : "opacity-0"
+          isLoaded ? "opacity-50 group-hover:scale-105 group-hover:opacity-20" : "opacity-0"
         )} 
         alt="" 
         referrerPolicy="no-referrer"
       />
+      {work.video && (
+        <video 
+          ref={videoRef}
+          src={work.video}
+          className={cn(
+            "absolute inset-0 w-full h-full object-cover transition-opacity duration-1000",
+            isHovered ? "opacity-60" : "opacity-0 invisible"
+          )}
+          muted
+          loop
+          playsInline
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
       <div className="absolute bottom-0 left-0 p-6 sm:p-8 z-20">
         <span className="text-[10px] uppercase tracking-widest text-indigo-300 mb-2 block">{work.category}</span>
@@ -400,11 +436,11 @@ export function Overlay() {
                     className="grid grid-cols-2 gap-8 pt-12 border-t border-white/5"
                   >
                     <div>
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/20 mb-2 block">Client</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2 block">Client</span>
                       <div className="text-lg font-display uppercase tracking-wider">{selectedProject.client}</div>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/20 mb-2 block">Year</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-2 block">Year</span>
                       <div className="text-lg font-display uppercase tracking-wider">{selectedProject.year}</div>
                     </div>
                   </motion.div>
@@ -465,7 +501,7 @@ export function Overlay() {
               {[...clients, ...clients].map((client, i) => (
                 <div 
                   key={`${client}-${i}`}
-                  className="text-2xl md:text-3xl font-display uppercase tracking-widest text-white/20 hover:text-white/60 transition-colors duration-500 cursor-default"
+                  className="text-2xl md:text-3xl font-display uppercase tracking-widest text-white/40 hover:text-white/70 transition-colors duration-500 cursor-default"
                 >
                   {client}
                 </div>
@@ -535,7 +571,10 @@ export function Overlay() {
               role="article"
               className="group p-12 border-b md:border-b-0 md:border-r border-white/5 transition-colors duration-500 hover:bg-white/[0.03] min-h-[400px] flex flex-col justify-between focus:outline-none focus:bg-white/[0.05]"
             >
-              <div className="opacity-60 group-hover:opacity-100 group-hover:text-indigo-400 transition-all duration-500 transform group-hover:scale-110 origin-left">
+              <div 
+                aria-hidden="true"
+                className="opacity-60 group-hover:opacity-100 group-hover:text-indigo-400 transition-all duration-500 transform group-hover:scale-110 origin-left"
+              >
                 {service.icon}
               </div>
               <div>
@@ -695,21 +734,21 @@ export function Overlay() {
 
                   <div className="space-y-10">
                     <div className="space-y-4">
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/20">The Challenge</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/50">The Challenge</span>
                       <p className="text-lg text-white/80 font-light leading-relaxed">
                         {selectedArticle.caseStudy.challenge}
                       </p>
                     </div>
 
                     <div className="space-y-4">
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/20">The Solution</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/50">The Solution</span>
                       <p className="text-lg text-white/80 font-light leading-relaxed">
                         {selectedArticle.caseStudy.solution}
                       </p>
                     </div>
 
                     <div className="space-y-4">
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/20">The Results</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/50">The Results</span>
                       <div className="p-8 rounded-2xl bg-white/[0.03] border border-white/5">
                         <p className="text-xl text-indigo-300 font-medium italic leading-relaxed">
                           "{selectedArticle.caseStudy.results}"
@@ -719,7 +758,7 @@ export function Overlay() {
 
                     {/* Related Articles */}
                     <div className="pt-12 border-t border-white/5 space-y-8">
-                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/20">Related Insights</span>
+                      <span className="text-[10px] uppercase tracking-[0.2em] text-white/50">Related Insights</span>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         {articles
                           .filter(a => a.category === selectedArticle.category && a.id !== selectedArticle.id)
@@ -758,7 +797,7 @@ export function Overlay() {
                           ))
                         }
                         {articles.filter(a => a.category === selectedArticle.category && a.id !== selectedArticle.id).length === 0 && (
-                          <p className="text-white/20 text-xs italic">No related articles in this category yet.</p>
+                          <p className="text-white/40 text-xs italic">No related articles in this category yet.</p>
                         )}
                       </div>
                     </div>
@@ -803,7 +842,7 @@ export function Overlay() {
                 <span className="text-[10px] uppercase tracking-[0.5em] text-indigo-400 font-mono block mb-2">Contact</span>
                 <h2 className="text-6xl sm:text-7xl md:text-8xl font-display uppercase tracking-tighter leading-[0.9]">
                   Let's Make <br />
-                  <span className="text-white/20 italic font-serif normal-case tracking-normal">Magic</span>
+                  <span className="text-white/40 italic font-serif normal-case tracking-normal">Magic</span>
                 </h2>
                 <p className="text-white/40 max-w-md text-xl font-light leading-relaxed">
                   Have a vision you want to bring to life? We're ready to collaborate on your next groundbreaking project.
@@ -813,11 +852,11 @@ export function Overlay() {
               <div className="space-y-8 pt-8 border-t border-white/5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                   <div className="flex flex-col">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/20 mb-3">Location</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/50 mb-3">Location</span>
                     <span className="text-lg font-light">Malappuram, Kerala, India</span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/20 mb-3">Availability</span>
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-white/50 mb-3">Availability</span>
                     <span className="text-lg font-light flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                       Taking on projects
@@ -825,7 +864,7 @@ export function Overlay() {
                   </div>
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-white/20 mb-3">General Enquiries</span>
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-white/50 mb-3">General Enquiries</span>
                   <div className="flex items-center gap-4">
                     <a href="mailto:ashiqparapurath@gmail.com" className="text-lg sm:text-2xl font-display uppercase tracking-tight hover:text-indigo-400 transition-all duration-300 break-words">
                       ashiqparapurath@gmail.com
@@ -873,9 +912,9 @@ export function Overlay() {
                     <div className="w-24 h-24 bg-indigo-500/10 rounded-full flex items-center justify-center mx-auto border border-indigo-500/20">
                       <CheckCircle2 className="w-10 h-10 text-indigo-400" />
                     </div>
-                    <div className="space-y-4">
+                    <div className="space-y-4" aria-live="polite">
                       <h3 className="text-4xl font-display uppercase tracking-tight">Message Received</h3>
-                      <p className="text-white/40 max-w-xs mx-auto text-lg font-light">Thank you for reaching out. Our team will review your enquiry and get back to you shortly.</p>
+                      <p className="text-white/60 max-w-xs mx-auto text-lg font-light">Thank you for reaching out. Our team will review your enquiry and get back to you shortly.</p>
                     </div>
                     <button 
                       onClick={() => setSubmitStatus(null)}
@@ -895,13 +934,13 @@ export function Overlay() {
                           name="name"
                           value={formState.name}
                           onChange={handleInputChange}
-                          className="w-full bg-transparent border-b border-white/10 py-4 focus:outline-none focus:border-indigo-500 transition-all peer placeholder:text-transparent"
+                          className="w-full bg-transparent border-b border-white/20 py-4 focus:outline-none focus:border-indigo-500 transition-all peer placeholder:text-transparent"
                           placeholder="Name"
                           id="name"
                         />
                         <label 
                           htmlFor="name"
-                          className="absolute left-0 top-4 text-[10px] uppercase tracking-[0.3em] text-white/30 transition-all pointer-events-none peer-focus:-top-4 peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-white/40"
+                          className="absolute left-0 top-4 text-[10px] uppercase tracking-[0.3em] text-white/50 transition-all pointer-events-none peer-focus:-top-4 peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-white/60"
                         >
                           Full Name
                         </label>
@@ -913,13 +952,13 @@ export function Overlay() {
                           name="email"
                           value={formState.email}
                           onChange={handleInputChange}
-                          className="w-full bg-transparent border-b border-white/10 py-4 focus:outline-none focus:border-indigo-500 transition-all peer placeholder:text-transparent"
+                          className="w-full bg-transparent border-b border-white/20 py-4 focus:outline-none focus:border-indigo-500 transition-all peer placeholder:text-transparent"
                           placeholder="Email"
                           id="email"
                         />
                         <label 
                           htmlFor="email"
-                          className="absolute left-0 top-4 text-[10px] uppercase tracking-[0.3em] text-white/30 transition-all pointer-events-none peer-focus:-top-4 peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-white/40"
+                          className="absolute left-0 top-4 text-[10px] uppercase tracking-[0.3em] text-white/50 transition-all pointer-events-none peer-focus:-top-4 peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-white/60"
                         >
                           Email Address
                         </label>
@@ -932,13 +971,13 @@ export function Overlay() {
                         name="subject"
                         value={formState.subject}
                         onChange={handleInputChange}
-                        className="w-full bg-transparent border-b border-white/10 py-4 focus:outline-none focus:border-indigo-500 transition-all peer placeholder:text-transparent"
+                        className="w-full bg-transparent border-b border-white/20 py-4 focus:outline-none focus:border-indigo-500 transition-all peer placeholder:text-transparent"
                         placeholder="Subject"
                         id="subject"
                       />
                       <label 
                         htmlFor="subject"
-                        className="absolute left-0 top-4 text-[10px] uppercase tracking-[0.3em] text-white/30 transition-all pointer-events-none peer-focus:-top-4 peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-white/40"
+                        className="absolute left-0 top-4 text-[10px] uppercase tracking-[0.3em] text-white/50 transition-all pointer-events-none peer-focus:-top-4 peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-white/60"
                       >
                         Subject
                       </label>
@@ -950,13 +989,13 @@ export function Overlay() {
                         value={formState.message}
                         onChange={handleInputChange}
                         rows={4}
-                        className="w-full bg-transparent border-b border-white/10 py-4 focus:outline-none focus:border-indigo-500 transition-all peer placeholder:text-transparent resize-none"
+                        className="w-full bg-transparent border-b border-white/20 py-4 focus:outline-none focus:border-indigo-500 transition-all peer placeholder:text-transparent resize-none"
                         placeholder="Message"
                         id="message"
                       />
                       <label 
                         htmlFor="message"
-                        className="absolute left-0 top-4 text-[10px] uppercase tracking-[0.3em] text-white/30 transition-all pointer-events-none peer-focus:-top-4 peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-white/40"
+                        className="absolute left-0 top-4 text-[10px] uppercase tracking-[0.3em] text-white/50 transition-all pointer-events-none peer-focus:-top-4 peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-white/60"
                       >
                         Message
                       </label>
@@ -994,7 +1033,7 @@ export function Overlay() {
 
           {/* Client Logos Marquee */}
           <div className="mt-32 pt-12 border-t border-white/5 space-y-8">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-white/20 block text-center">Trusted By Industry Leaders</span>
+            <span className="text-[10px] uppercase tracking-[0.4em] text-white/40 block text-center">Trusted By Industry Leaders</span>
             <div className="relative overflow-hidden py-4">
               <div className="flex whitespace-nowrap">
                 <motion.div 
@@ -1057,7 +1096,7 @@ export function Overlay() {
                       {faq.q}
                     </h3>
                     <motion.div 
-                      className="text-white/20 group-hover:text-indigo-400"
+                      className="text-white/40 group-hover:text-indigo-400"
                       initial={false}
                       animate={{ rotate: 0 }}
                       variants={{
@@ -1075,7 +1114,7 @@ export function Overlay() {
             </div>
 
             <div className="text-center pt-8">
-              <p className="text-[10px] uppercase tracking-[0.2em] text-white/20 mb-6">Still have questions?</p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 mb-6">Still have questions?</p>
               <a 
                 href="#contact" 
                 className="inline-flex items-center gap-3 text-indigo-400 hover:text-white transition-colors uppercase text-[10px] tracking-[0.4em]"
