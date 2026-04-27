@@ -27,8 +27,11 @@ async function startServer() {
 
   app.use(express.json());
 
+  app.get("/api/health", (req, res) => res.json({ status: "ok" }));
+
   // API Routes
   app.post("/api/contact", async (req, res) => {
+    console.log("Contact API hit with body:", JSON.stringify(req.body));
     const { name, email, subject, message } = req.body;
     
     console.log("Contact form submission received:", { name, email, subject, message });
@@ -87,6 +90,8 @@ async function startServer() {
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
+
+  return app;
 }
 
-startServer();
+export const app = startServer();
