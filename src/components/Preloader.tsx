@@ -35,7 +35,7 @@ export function Preloader() {
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 1.5, ease: "easeInOut" }}
-                  src="/white_logo.png"
+                  src={new URL('/white_logo.png', import.meta.url).href}
                   alt="Logo"
                   className="w-full h-full object-contain"
                 />

@@ -262,7 +262,7 @@ export function Overlay() {
           aria-label="Back to top"
         >
           <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center overflow-hidden flex-shrink-0">
-            <img src="/white_logo.png" alt="AS PRODUCTION Logo" className="w-full h-full object-contain" />
+            <img src={new URL('/white_logo.png', import.meta.url).href} alt="AS PRODUCTION Logo" className="w-full h-full object-contain" />
           </div>
           <span className="font-display text-lg md:text-xl tracking-tighter uppercase hidden sm:block">AS PRODUCTION</span>
         </motion.div>
@@ -1014,6 +1014,74 @@ export function Overlay() {
               </div>
               <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#030303] to-transparent z-10" />
               <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#030303] to-transparent z-10" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section - Minimalist & Technical */}
+      <section className="py-24 bg-[#030303] border-t border-white/5 pointer-events-auto transition-colors duration-500">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="space-y-16">
+            <div className="text-center space-y-4">
+              <span className="text-[10px] uppercase tracking-[0.4em] text-white/40">Knowledge Base</span>
+              <h2 className="text-4xl md:text-6xl font-display uppercase tracking-tighter">Frequently Asked Questions</h2>
+            </div>
+
+            <div className="space-y-4">
+              {[
+                {
+                  q: "What services does AS PRODUCTION specialize in?",
+                  a: "We are a full-spectrum digital production house specializing in high-performance web applications, cinematic video editing, brand identity design, and professional photography/videography."
+                },
+                {
+                  q: "What is your typical project timeline?",
+                  a: "Timeline varies by scope. A complex web application usually take 4-8 weeks, while video post-production or brand identity projects typically range from 1-3 weeks."
+                },
+                {
+                  q: "Do you work with international clients?",
+                  a: "Yes, we collaborate with clients globally. Our workflows are optimized for remote collaboration across all time zones."
+                },
+                {
+                  q: "What is the process for starting a new project?",
+                  a: "It begins with an initial consultation to define your goals, followed by a detailed proposal, tactical roadmap, and iterative execution with regular check-ins."
+                },
+                {
+                  q: "Can you handle both design and development?",
+                  a: "Absolutely. We pride ourselves on 'Essentialism in Digital'—bridging the gap between technical complexity and artistic elegance."
+                }
+              ].map((faq, i) => (
+                <details key={i} className="group border border-white/5 rounded-2xl bg-white/[0.01] hover:bg-white/[0.03] transition-all duration-300">
+                  <summary className="flex items-center justify-between p-6 cursor-pointer list-none focus:outline-none">
+                    <h3 className="text-lg md:text-xl font-display uppercase tracking-tight group-hover:text-indigo-400 transition-colors">
+                      {faq.q}
+                    </h3>
+                    <motion.div 
+                      className="text-white/20 group-hover:text-indigo-400"
+                      initial={false}
+                      animate={{ rotate: 0 }}
+                      variants={{
+                        open: { rotate: 45 }
+                      }}
+                    >
+                      <X className="w-5 h-5 transition-transform duration-300 group-open:rotate-45" />
+                    </motion.div>
+                  </summary>
+                  <div className="px-6 pb-6 text-white/60 font-light leading-relaxed max-w-2xl">
+                    {faq.a}
+                  </div>
+                </details>
+              ))}
+            </div>
+
+            <div className="text-center pt-8">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-white/20 mb-6">Still have questions?</p>
+              <a 
+                href="#contact" 
+                className="inline-flex items-center gap-3 text-indigo-400 hover:text-white transition-colors uppercase text-[10px] tracking-[0.4em]"
+              >
+                Reach out directly <ArrowRight className="w-3 h-3" />
+              </a>
             </div>
           </div>
         </div>

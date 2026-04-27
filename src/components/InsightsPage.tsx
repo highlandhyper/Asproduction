@@ -191,7 +191,7 @@ export function InsightsPage() {
       <footer className="py-24 border-t border-white/5 px-6">
         <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-4">
-             <img src="/white_logo.png" alt="Logo" className="w-10 h-10 object-contain" />
+             <img src={new URL('/white_logo.png', import.meta.url).href} alt="Logo" className="w-10 h-10 object-contain" />
              <span className="font-display uppercase tracking-widest text-sm">AS PRODUCTION</span>
           </div>
           <p className="text-white/20 text-[10px] uppercase tracking-[0.2em]">© 2024 AS PRODUCTION. All rights reserved.</p>

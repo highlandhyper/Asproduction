@@ -15,7 +15,7 @@ export function Founder() {
           className="flex items-center gap-3 md:gap-4 group hover:text-indigo-400 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-lg p-1"
         >
           <div className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center overflow-hidden flex-shrink-0">
-            <img src="/white_logo.png" alt="AS PRODUCTION Logo" className="w-full h-full object-contain" />
+            <img src={new URL('/white_logo.png', import.meta.url).href} alt="AS PRODUCTION Logo" className="w-full h-full object-contain" />
           </div>
           <span className="text-[10px] uppercase tracking-[0.4em] font-mono hidden sm:block italic">Studio</span>
         </Link>
@@ -39,7 +39,7 @@ export function Founder() {
           >
             <div className="aspect-[4/5] overflow-hidden rounded-[2rem] border border-white/5 bg-white/[0.02] relative group">
               <img 
-                src="/founder.jpeg" 
+                src={new URL('/founder.jpeg', import.meta.url).href} 
                 alt="Ashiq - Founder" 
                 className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000"
               />
